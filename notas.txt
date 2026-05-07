@@ -1,0 +1,12 @@
+python main.py             ---ejecutar
+.\.venv\Scripts\activate         ---activar venv
+
+E:\alejandra\automatizacion_uniformes
+
+rm -r .venv                      ---borrar entorno
+python -m venv .venv             ---crea entorno
+py -0                            ---ver versione python
+
+
+pip freeze > requirements.txt    ---clona librerias
+pip install -r requirements.txt  ---sincroniza las librerias

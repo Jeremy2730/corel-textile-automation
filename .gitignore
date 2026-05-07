@@ -1,0 +1,15 @@
+# entorno virtual
+.venv/
+
+# cache python
+__pycache__/
+*.pyc
+
+# vscode
+.vscode/
+
+# backups
+*.bak
+
+# logs
+*.log
