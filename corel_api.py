@@ -115,7 +115,6 @@ class CorelAPI:
 
             paginas_originales = []
 
-            # guardar originales
             for i in range(1, doc.Pages.Count + 1):
                 paginas_originales.append(doc.Pages.Item(i))
 
@@ -125,40 +124,41 @@ class CorelAPI:
 
                 cantidad = pedido.get(nombre_base, 1)
 
-                # renombrar original
                 page.Name = f"{nombre_base}_1"
-                print(f"📄 Base: {page.Name}")
 
                 for n in range(2, cantidad + 1):
 
-                    # crear nueva página
                     doc.AddPages(1)
 
                     nueva_pagina = doc.Pages.Item(doc.Pages.Count)
 
                     nueva_pagina.Name = f"{nombre_base}_{n}"
 
-                    # activar página original
                     page.Activate()
 
-                    # seleccionar todo
                     sr = page.Shapes.All()
 
                     sr.CreateSelection()
 
-                    # duplicar selección
                     self.app.ActiveSelection.Duplicate()
 
-                    # tomar duplicados
                     duplicados = self.app.ActiveSelectionRange
 
-                    # mover a nueva página
                     nueva_pagina.Activate()
 
                     for shape in duplicados:
                         shape.MoveToLayer(nueva_pagina.ActiveLayer)
 
-                    print(f"📄 Duplicada: {nueva_pagina.Name}")
+            # ✅ RESUMEN FUERA DEL LOOP
+            print("\n📦 Producción generada:\n")
+
+            total = 0
+
+            for talla, cantidad in pedido.items():
+                print(f"{talla} → {cantidad} unidades")
+                total += cantidad
+
+            print(f"\n✅ Total páginas: {total}")
 
             print("✅ Páginas duplicadas correctamente")
 

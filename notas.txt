@@ -1,7 +1,8 @@
-python main.py             ---ejecutar
+python main.py                   ---ejecutar
 .\.venv\Scripts\activate         ---activar venv
 
-E:\alejandra\automatizacion_uniformes
+E:\alejandra\automatizacion_uniformes                     ---ubicacion carpetas
+E:\alejandra\automatizacion_uniformes\nuevo pedido        ---ubicacion pedido
 
 rm -r .venv                      ---borrar entorno
 python -m venv .venv             ---crea entorno
@@ -10,3 +11,34 @@ py -0                            ---ver versione python
 
 pip freeze > requirements.txt    ---clona librerias
 pip install -r requirements.txt  ---sincroniza las librerias
+
+git --version                     ---verificar si hay git
+git init                          ---iniciar repo 
+
+.gitignore                        ---crear gitignore
+
+# entorno virtual
+.venv/
+
+# cache python
+__pycache__/
+*.pyc
+
+# vscode
+.vscode/
+
+# backups
+*.bak
+
+# logs
+*.log                       ---guarda esto
+
+
+New-Item .gitignore         ---crea gitignore
+notepad .gitignore          ---y pegas contenido
+
+git status                  ---verificar que no este venv y estado
+
+git init
+git add .
+git commit -m "nuevo nombre"

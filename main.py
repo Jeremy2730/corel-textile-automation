@@ -19,18 +19,32 @@ if corel.conectar():
         exit()
 
     # 🆕 crear resultado
-    pedido_nombre = input("🧾 Nombre del pedido: ").strip()
-    ruta_guardado = input("💾 ¿Dónde guardar el pedido?: ").strip()
+    pedido_nombre = input("🧾 Nombre del archivo resultado: ").strip()
+    ruta_guardado = input("💾 ¿Dónde guardar el archivo generado?: ").strip()
     doc_resultado = corel.copiar_archivo_base(
         ruta_tallas,
         pedido_nombre,
         ruta_guardado
     )
-    pedido = {
-        "4XL": 2,
-        "3XL": 1,
-        "16": 3
-    }
+    pedido_texto = input("📦 Cantidades por talla (ej: 4XL:2,): ").strip()
+
+    pedido = {}
+
+    items = pedido_texto.split(",")
+
+    for item in items:
+
+        item = item.strip()
+
+        # ignorar vacíos
+        if not item:
+            continue
+
+        talla, cantidad = item.split(":")
+
+        pedido[talla.strip().upper()] = int(cantidad.strip())
+
+    print(pedido)
 
     corel.filtrar_tallas(doc_resultado, pedido)
     corel.duplicar_paginas(doc_resultado, pedido)
