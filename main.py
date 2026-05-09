@@ -26,6 +26,8 @@ if corel.conectar():
         pedido_nombre,
         ruta_guardado
     )
+
+    # 📦 pedido
     pedido_texto = input("📦 Cantidades por talla (ej: 4XL:2,): ").strip()
 
     pedido = {}
@@ -40,11 +42,35 @@ if corel.conectar():
         if not item:
             continue
 
-        talla, cantidad = item.split(":")
+        try:
 
-        pedido[talla.strip().upper()] = int(cantidad.strip())
+            talla, cantidad = item.split(":")
+
+            talla = talla.strip().upper()
+
+            # 🔥 aliases de tallas
+            aliases = {
+                "XXL": "2XL",
+                "XXXL": "3XL",
+                "XXXXL": "4XL",
+                "XXXXXL": "5XL"
+            }
+
+            # convertir alias
+            if talla in aliases:
+                talla = aliases[talla]
+
+            cantidad = int(cantidad.strip())
+
+            pedido[talla] = cantidad
+
+        except:
+            print(f"❌ Formato inválido: {item}")
 
     print(pedido)
 
+    # 🔥 producción
     corel.filtrar_tallas(doc_resultado, pedido)
     corel.duplicar_paginas(doc_resultado, pedido)
+    corel.transferir_diseno(doc_base, doc_resultado)
+    #corel.listar_shapes(doc_base)

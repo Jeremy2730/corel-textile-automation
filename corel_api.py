@@ -149,7 +149,6 @@ class CorelAPI:
                     for shape in duplicados:
                         shape.MoveToLayer(nueva_pagina.ActiveLayer)
 
-            # ✅ RESUMEN FUERA DEL LOOP
             print("\n📦 Producción generada:\n")
 
             total = 0
@@ -164,3 +163,129 @@ class CorelAPI:
 
         except Exception as e:
             print("❌ Error duplicando páginas:", e)
+
+    def listar_shapes(self, doc):
+
+        try:
+
+            for page in doc.Pages:
+
+                print(f"\n📄 Página: {page.Name}")
+
+                for shape in page.Shapes:
+
+                    try:
+                        print(
+                            f" - Nombre: {shape.Name} | "
+                            f"Tipo: {shape.Type}"
+                        )
+
+                    except:
+                        print("❌ Error leyendo shape")
+
+        except Exception as e:
+            print("❌ Error listando shapes:", e)
+
+
+    def transferir_diseno(self, doc_base, doc_resultado):
+
+        try:
+
+            shape_origen = None
+
+            # 🔍 buscar molde vestido
+            for page in doc_base.Pages:
+
+                for shape in page.Shapes:
+
+                    if shape.Name.lower() == "molde_delantero":
+
+                        shape_origen = shape
+                        break
+
+            if not shape_origen:
+                print("❌ No se encontró molde_delantero")
+                return
+
+            print("✅ Molde origen encontrado")
+
+            # recorrer páginas resultado
+            for page in doc_resultado.Pages:
+                #print(f"\n📄 Revisando página: {page.Name}")
+
+                page.Activate()
+
+                for shape in page.Shapes:
+                    #print(f"   → {shape.Name}")
+
+                    if shape.Name.lower() == "delantero":
+
+                        print(f"🎯 Insertando diseño en talla: {page.Name}")
+
+                        try:
+
+                            # borrar placeholder
+                            if shape.PowerClip.Shapes.Count > 0:
+
+                                for s in shape.PowerClip.Shapes:
+                                    s.Delete()
+
+                        except:
+                            pass
+
+                        # tomar contenido interno
+                        contenido = shape_origen.PowerClip.Shapes
+
+                        # copiar cada shape interno
+                        for s in contenido:
+
+                            # 🔥 solo textura
+                            if s.Name.lower() != "textura_delantero":
+                                continue
+
+                            s.Copy()
+
+                            page.Activate()
+
+                            self.app.ActiveLayer.Paste()
+
+                            pegado = self.app.ActiveSelection.Shapes[0]
+
+                            pegado.AddToPowerClip(shape)
+
+
+                            # tomar contenido recién insertado
+                            contenido_pc = shape.PowerClip.Shapes[0]
+
+                            # tamaños
+                            ancho_molde = shape.SizeWidth
+                            alto_molde = shape.SizeHeight
+
+                            ancho_textura = contenido_pc.SizeWidth
+                            alto_textura = contenido_pc.SizeHeight
+
+                            # escalado proporcional
+                            escala_x = ancho_molde / ancho_textura
+                            escala_y = alto_molde / alto_textura
+
+                            # usar la escala MÁS GRANDE
+                            # para cubrir el molde completo
+                            escala = max(escala_x, escala_y)
+
+                            # nuevo tamaño proporcional
+                            nuevo_ancho = ancho_textura * escala
+                            nuevo_alto = alto_textura * escala
+
+                            contenido_pc.SetSize(
+                                nuevo_ancho,
+                                nuevo_alto
+                            )
+
+                            # centrar
+                            contenido_pc.CenterX = shape.CenterX
+                            contenido_pc.CenterY = shape.CenterY
+
+            print("✅ Diseños transferidos correctamente")
+
+        except Exception as e:
+            print("❌ Error transfiriendo diseño:", e)
