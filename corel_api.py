@@ -19,12 +19,20 @@ from corel.piezas_producto_manager import (obtener_piezas_producto)
 from corel.page_name_manager import (obtener_nombres_paginas)
 from corel.file_manager import (copiar_archivo_base)
 from corel.shape_list_manager import (listar_shapes_documento)
+from corel.personalization.overlay_manager import (OverlayManager)
+from corel.personalization.logo_manager import (LogoManager)
+from config.logos import LOGOS
+from corel.powerclip_manager import (limpiar_zonas_pagina)
+from corel.personalization.logo_scale_manager import (calcular_alto_logo)
+
 
 class CorelAPI:
     def __init__(self):
         self.app = None
         self.doc = None
-
+        self.overlay_manager = OverlayManager()
+        self.logo_manager = LogoManager()
+        
     def conectar(self):
 
         self.app = conectar_corel()
@@ -168,14 +176,39 @@ class CorelAPI:
                 if not producto:
                     continue
 
-                piezas_permitidas = (
+                config_producto = (
                     PRODUCTOS[producto]
+                )
+
+                piezas_permitidas = (
+                    config_producto["piezas"]
+                )
+
+                overlays = (
+                    config_producto.get(
+                        "overlays",
+                        []
+                    )
+                )
+
+                zonas = (
+                    config_producto.get(
+                        "zonas",
+                        []
+                    )
+                )
+
+                permitidos = (
+
+                    piezas_permitidas
+                    + overlays
+                    + zonas
                 )
 
                 shapes_eliminar = (
                     obtener_shapes_a_eliminar(
                         page.Shapes,
-                        piezas_permitidas
+                        permitidos
                     )
                 )
 
@@ -218,6 +251,12 @@ class CorelAPI:
 
                 print(f"\n📄 Procesando talla: {page.Name}")
 
+                talla_actual = (
+                    page.Name
+                    .split("_")[0]
+                    .upper()
+                )
+
                 contexto = obtener_contexto_pagina(page,pedido)
 
                 if not contexto:
@@ -230,6 +269,15 @@ class CorelAPI:
                 )
 
                 for origen_nombre, destino_nombre in piezas:
+
+                    OVERLAYS_INTELIGENTES = [
+                        "rayas_hombros",
+                        "franja_manga_derecha",
+                        "franja_manga_izquierda"
+                    ]
+
+                    if origen_nombre in OVERLAYS_INTELIGENTES:
+                        continue
 
                     shape_origen, shape_destino = (
                         resolver_shapes_transferencia(
@@ -264,8 +312,101 @@ class CorelAPI:
                         shape_origen,
                         shape_destino,
                         origen_nombre,
-                        destino_nombre
+                        destino_nombre,
+                        limpiar=True
                     )
+
+                # ← TERMINÓ EL LOOP
+
+
+                shape_delantero = (
+                    resolver_shapes_transferencia(
+                        doc_base,
+                        page,
+                        "delantero",
+                        "delantero"
+                    )[1]
+                )
+
+                if shape_delantero:
+
+                    self.overlay_manager.insertar_overlay_powerclip(
+                        self.app,
+                        page,
+                        doc_base,
+                        "rayas_hombros",
+                        shape_delantero
+                    )
+
+                shape_manga_derecha = (
+                    resolver_shapes_transferencia(
+                        doc_base,
+                        page,
+                        "manga_derecha",
+                        "manga_derecha"
+                    )[1]
+                )
+
+                if shape_manga_derecha:
+
+                    self.overlay_manager.insertar_overlay_powerclip(
+                        self.app,
+                        page,
+                        doc_base,
+                        "franja_manga_derecha",
+                        shape_manga_derecha
+                    )
+
+                shape_manga_izquierda = (
+                    resolver_shapes_transferencia(
+                        doc_base,
+                        page,
+                        "manga_izquierda",
+                        "manga_izquierda"
+                    )[1]
+                )
+
+                if shape_manga_izquierda:
+
+                    self.overlay_manager.insertar_overlay_powerclip(
+                        self.app,
+                        page,
+                        doc_base,
+                        "franja_manga_izquierda",
+                        shape_manga_izquierda
+                    )
+
+                for logo_data in LOGOS.values():
+
+                    pieza_destino = (
+                        resolver_shapes_transferencia(
+                            doc_base,
+                            page,
+                            logo_data["pieza"],
+                            logo_data["pieza"]
+                        )[1]
+                    )
+
+                    if not pieza_destino:
+                        continue
+
+                    alto_logo = calcular_alto_logo(
+                        logo_data["asset"],
+                        talla_actual
+                    )
+
+                    self.logo_manager.insertar_logo_powerclip(
+                        self.app,
+                        page,
+                        doc_base,
+                        logo_data["asset"],
+                        logo_data["zone"],
+                        pieza_destino,
+                        alto_logo
+                    )
+
+                # 🔥 limpiar todas las zonas
+                limpiar_zonas_pagina(page)
 
             log_info("Todas las piezas transferidas correctamente")
 

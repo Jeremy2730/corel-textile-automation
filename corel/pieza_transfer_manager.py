@@ -1,5 +1,5 @@
 from corel.powerclip_manager import (
-    limpiar_powerclip
+    limpiar_placeholders
 )
 
 from corel.texture_transfer_manager import (
@@ -13,7 +13,8 @@ def transferir_pieza(
     shape_origen,
     shape_destino,
     origen_nombre,
-    destino_nombre
+    destino_nombre,
+    limpiar=True
 ):
 
     print(
@@ -21,9 +22,11 @@ def transferir_pieza(
         f"→ {destino_nombre}"
     )
 
-    limpiar_powerclip(
-        shape_destino
-    )
+    if limpiar:
+
+        limpiar_placeholders(
+            shape_destino
+        )
 
     contenido = (
         shape_origen

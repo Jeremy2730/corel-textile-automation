@@ -1,4 +1,6 @@
-from corel.texture_manager import ajustar_ultimo_powerclip
+from corel.texture_manager import (
+    ajustar_textura_powerclip
+)
 
 
 def copiar_a_powerclip(
@@ -18,9 +20,14 @@ def copiar_a_powerclip(
 
         pegado = app.ActiveSelection.Shapes[0]
 
-        pegado.AddToPowerClip(shape_destino)
+        pegado.AddToPowerClip(
+            shape_destino
+        )
 
-        ajustar_ultimo_powerclip(shape_destino)
+        ajustar_textura_powerclip(
+            pegado,
+            shape_destino
+        )
 
         return True
 

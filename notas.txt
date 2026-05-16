@@ -42,3 +42,13 @@ git status                  ---verificar que no este venv y estado
 git init
 git add .
 git commit -m "nuevo nombre"
+
+# insertar logos
+                for logo_data in LOGOS.values():
+
+                    self.logo_manager.insertar_logo(
+                        self.app,
+                        page,
+                        logo_data["path"],
+                        logo_data["zone"]
+                    )

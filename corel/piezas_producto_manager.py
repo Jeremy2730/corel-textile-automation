@@ -1,4 +1,3 @@
-from config.piezas import PIEZAS
 from config.productos import PRODUCTOS
 
 
@@ -6,11 +5,17 @@ def obtener_piezas_producto(
     producto
 ):
 
-    piezas = []
-
-    piezas_permitidas = (
+    config_producto = (
         PRODUCTOS[producto]
     )
+
+    piezas_permitidas = (
+        config_producto["piezas"]
+    )
+
+    piezas = []
+
+    from config.piezas import PIEZAS
 
     for origen, destino in PIEZAS.items():
 

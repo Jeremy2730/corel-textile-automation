@@ -5,10 +5,7 @@ from corel.page_manager import obtener_nombres_paginas
 
 from services.pedido_service import crear_pedido
 from services.produccion_service import ejecutar_produccion
-from services.ui_service import (
-    mostrar_tallas,
-    mostrar_productos
-)
+from services.ui_service import (mostrar_tallas, mostrar_productos)
 
 
 corel = CorelAPI()
