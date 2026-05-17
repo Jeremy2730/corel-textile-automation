@@ -1,5 +1,5 @@
 from config.productos import PRODUCTOS
-from config.aliases import ALIASES_TALLAS
+from config.aliases import (ALIASES_TALLAS, ALIASES_PRODUCTOS)
 from config.tallas import TALLAS_ESPECIALES
 
 
@@ -43,6 +43,12 @@ def crear_pedido(
             cantidad = int(cantidad.strip())
 
             producto = producto.strip().lower()
+
+            # 🔥 aliases productos
+            producto = ALIASES_PRODUCTOS.get(
+                producto,
+                producto
+            )
 
             # validar talla
             if talla not in tallas_existentes:

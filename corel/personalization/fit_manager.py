@@ -10,6 +10,10 @@ class FitManager:
         shape_w = shape.SizeWidth
         shape_h = shape.SizeHeight
 
+        # 🔥 protección
+        if shape_w <= 0 or shape_h <= 0:
+            return
+
         zone_w = zone.SizeWidth
         zone_h = zone.SizeHeight
 
@@ -38,17 +42,47 @@ class FitManager:
         self,
         shape,
         zona,
+        shape_referencia=None,
         align="top"
     ):
 
-        shape.SetSize(
-            zona.SizeWidth,
-            zona.SizeHeight
+        shape_w = shape.SizeWidth
+        shape_h = shape.SizeHeight
+
+        if shape_w <= 0 or shape_h <= 0:
+            return
+
+        # 🔥 escalar SOLO por ancho
+        ancho_objetivo = zona.SizeWidth
+
+        if shape_referencia:
+
+            ancho_objetivo = (
+                shape_referencia.SizeWidth
+            )
+
+        scale = (
+            ancho_objetivo /
+            shape_w
         )
 
-        shape.CenterX = zona.CenterX
-        shape.CenterY = zona.CenterY
+        nuevo_w = (
+            shape_w * scale
+        )
 
+        nuevo_h = (
+            shape_h * scale
+        )
+
+        shape.SetSize(
+            nuevo_w,
+            nuevo_h
+        )
+
+        # 🔥 centrar horizontalmente
+        shape.CenterX = zona.CenterX
+
+        # 🔥 alineación vertical
         if align == "top":
 
             shape.TopY = zona.TopY

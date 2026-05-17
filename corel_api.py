@@ -23,8 +23,6 @@ from corel.personalization.overlay_manager import (OverlayManager)
 from corel.personalization.logo_manager import (LogoManager)
 from config.logos import LOGOS
 from corel.powerclip_manager import (limpiar_zonas_pagina)
-from corel.personalization.logo_scale_manager import (calcular_alto_logo)
-
 
 class CorelAPI:
     def __init__(self):
@@ -390,19 +388,13 @@ class CorelAPI:
                     if not pieza_destino:
                         continue
 
-                    alto_logo = calcular_alto_logo(
-                        logo_data["asset"],
-                        talla_actual
-                    )
-
                     self.logo_manager.insertar_logo_powerclip(
                         self.app,
                         page,
                         doc_base,
                         logo_data["asset"],
                         logo_data["zone"],
-                        pieza_destino,
-                        alto_logo
+                        pieza_destino
                     )
 
                 # 🔥 limpiar todas las zonas

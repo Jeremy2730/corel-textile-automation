@@ -5,7 +5,7 @@ from corel.page_manager import obtener_nombres_paginas
 
 from services.pedido_service import crear_pedido
 from services.produccion_service import ejecutar_produccion
-from services.ui_service import (mostrar_tallas, mostrar_productos)
+from services.ui_service import (mostrar_tallas)
 
 
 corel = CorelAPI()
@@ -50,11 +50,9 @@ if corel.conectar():
         doc_base
     )
 
-    mostrar_tallas(tallas_base)
-
-    mostrar_productos(
-        PRODUCTOS.keys()
-    )
+    mostrar_tallas(tallas_existentes)
+    print("\nDEBUG TALLAS BASE:")
+    print(tallas_base)
 
     pedido = crear_pedido(
         tallas_existentes,

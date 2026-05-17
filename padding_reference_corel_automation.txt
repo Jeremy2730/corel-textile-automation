@@ -1,0 +1,65 @@
+
+# REFERENCIA DE PADDING - COREL AUTOMATION
+
+## Logos y Elementos Visuales
+
+- Escudo pecho -> 0.62 -> 0.75
+  Protagonista pero elegante
+
+- Marca (Nike, Adidas, Puma) -> 0.45 -> 0.60
+  Pequeña y limpia
+
+- Sponsor frontal -> 0.75 -> 0.95
+  Ocupa bastante espacio
+
+- Sponsor espalda -> 0.70 -> 0.90
+  Visible pero balanceado
+
+- Escudo manga -> 0.50 -> 0.65
+  Discreto
+
+- Etiqueta -> 0.70 -> 0.85
+  Pequeña pero legible
+
+- Numero espalda -> 0.80 -> 0.95
+  Debe dominar visualmente
+
+- Numero short -> 0.55 -> 0.75
+  Secundario
+
+- Nombre jugador -> 0.75 -> 0.92
+  Debe aprovechar el ancho
+
+- Iniciales pequenas -> 0.50 -> 0.70
+  Compactas
+
+- Bandera pequena -> 0.55 -> 0.75
+  Visible sin dominar
+
+- Parche torneo -> 0.60 -> 0.78
+  Proporcional
+
+## Overlays
+
+- Overlay rayas hombro -> NO USAR PADDING
+  Usar fit por ancho
+
+- Franjas manga -> NO USAR PADDING
+  Stretch horizontal
+
+- Textura -> NO USAR PADDING
+  Llenar completamente
+
+## Arquitectura futura
+
+fit_logo_to_zone()
+fit_overlay_to_zone()
+fit_text_to_zone()
+fit_number_to_zone()
+
+## Estrategias visuales
+
+logos -> contain fit proporcional
+overlays -> stretch_x
+nombres -> fit_width
+numeros -> contain_large

@@ -1,19 +1,8 @@
-from corel.origen_manager import (
-    buscar_shape_origen
-)
-
-from corel.personalization.zone_manager import (
-    ZoneManager
-)
-
-from corel.personalization.fit_manager import (
-    FitManager
-)
-
-from utils.logger import (
-    log_warning,
-    log_info
-)
+from corel.origen_manager import (buscar_shape_origen)
+from corel.personalization.zone_manager import (ZoneManager)
+from corel.personalization.fit_manager import (FitManager)
+from utils.logger import (log_warning,log_info)
+from config.logo_rules import (LOGO_RULES)
 
 
 class LogoManager:
@@ -31,8 +20,7 @@ class LogoManager:
         doc_base,
         asset_name,
         zone_name,
-        powerclip_destino,
-        alto_logo
+        powerclip_destino
     ):
 
         zona = self.zone_manager.get_zone(
@@ -74,10 +62,20 @@ class LogoManager:
         )
 
         # ✅ ajustar tamaño
-        self.fit_manager.fit_logo_inteligente(
+        rules = LOGO_RULES.get(
+            asset_name,
+            {}
+        )
+
+        padding = rules.get(
+            "padding",
+            0.85
+        )
+
+        self.fit_manager.fit_shape_to_zone(
             copia,
             zona,
-            alto_logo
+            padding
         )
 
         # ✅ meter al powerclip

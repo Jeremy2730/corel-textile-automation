@@ -8,6 +8,8 @@ rm -r .venv                      ---borrar entorno
 python -m venv .venv             ---crea entorno
 py -0                            ---ver versione python
 
+git switch checkpoint-texturas-estable-logo-inestable     ----proyecto estable
+
 
 pip freeze > requirements.txt    ---clona librerias
 pip install -r requirements.txt  ---sincroniza las librerias

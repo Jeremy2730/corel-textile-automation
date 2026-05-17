@@ -5,3 +5,15 @@ ALIASES_TALLAS = {
     "XXXXL": "4XL",
     "XXXXXL": "5XL"
 }
+
+ALIASES_PRODUCTOS = {
+
+    "camisetas": "camiseta",
+    "camisa": "camiseta",
+    "jersey": "camiseta",
+
+    "uniformes": "uniforme",
+
+    "short": "pantaloneta",
+    "shorts": "pantaloneta"
+}
