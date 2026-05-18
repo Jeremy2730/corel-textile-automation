@@ -38,6 +38,7 @@ class FitManager:
         shape.CenterX = zone.CenterX
         shape.CenterY = zone.CenterY
 
+
     def ajustar_overlay_inteligente(
         self,
         shape,
@@ -52,7 +53,7 @@ class FitManager:
         if shape_w <= 0 or shape_h <= 0:
             return
 
-        # 🔥 escalar SOLO por ancho
+        # 🔥 ancho objetivo
         ancho_objetivo = zona.SizeWidth
 
         if shape_referencia:
@@ -61,6 +62,7 @@ class FitManager:
                 shape_referencia.SizeWidth
             )
 
+        # 🔥 escalar proporcional
         scale = (
             ancho_objetivo /
             shape_w
@@ -80,7 +82,15 @@ class FitManager:
         )
 
         # 🔥 centrar horizontalmente
-        shape.CenterX = zona.CenterX
+        if shape_referencia:
+
+            shape.CenterX = (
+                shape_referencia.CenterX
+            )
+
+        else:
+
+            shape.CenterX = zona.CenterX
 
         # 🔥 alineación vertical
         if align == "top":
@@ -90,38 +100,3 @@ class FitManager:
         elif align == "bottom":
 
             shape.BottomY = zona.BottomY
-
-    def fit_logo_inteligente(
-        self,
-        shape,
-        zone,
-        alto_objetivo
-    ):
-
-        altura_original = (
-            shape.SizeHeight
-        )
-
-        ancho_original = (
-            shape.SizeWidth
-        )
-
-        proporcion = (
-            ancho_original /
-            altura_original
-        )
-
-        nuevo_alto = alto_objetivo
-
-        nuevo_ancho = (
-            nuevo_alto
-            * proporcion
-        )
-
-        shape.SetSize(
-            nuevo_ancho,
-            nuevo_alto
-        )
-
-        shape.CenterX = zone.CenterX
-        shape.CenterY = zone.CenterY

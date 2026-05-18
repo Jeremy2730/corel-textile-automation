@@ -83,6 +83,7 @@ class OverlayManager:
             self.fit_manager.ajustar_overlay_inteligente(
                 copia,
                 zona,
+                shape_referencia=powerclip_destino,
                 align="bottom"
             )
 

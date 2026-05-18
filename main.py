@@ -20,11 +20,10 @@ if corel.conectar():
     ruta_tallas = ruta_archivos + r"\plantilla_tallas.cdr"
 
     doc_base = corel.abrir_documento(ruta_base)
-    doc_tallas = corel.abrir_documento(ruta_tallas)
 
-    if not doc_base or not doc_tallas:
+    if not doc_base:
 
-        print("❌ No se pudieron abrir los archivos")
+        print("❌ No se pudo abrir diseno_base.cdr")
 
         exit()
 
@@ -43,7 +42,7 @@ if corel.conectar():
     )
 
     tallas_existentes = obtener_nombres_paginas(
-        doc_tallas
+        doc_resultado
     )
 
     tallas_base = corel.obtener_tallas_base(
@@ -51,7 +50,6 @@ if corel.conectar():
     )
 
     mostrar_tallas(tallas_existentes)
-    print("\nDEBUG TALLAS BASE:")
     print(tallas_base)
 
     pedido = crear_pedido(

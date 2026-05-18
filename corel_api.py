@@ -23,11 +23,14 @@ from corel.personalization.overlay_manager import (OverlayManager)
 from corel.personalization.logo_manager import (LogoManager)
 from config.logos import LOGOS
 from corel.powerclip_manager import (limpiar_zonas_pagina)
+from corel.personalization.label_manager import (LabelManager)
+from config.labels import LABELS
 
 class CorelAPI:
     def __init__(self):
         self.app = None
         self.doc = None
+        self.label_manager = LabelManager()
         self.overlay_manager = OverlayManager()
         self.logo_manager = LogoManager()
         
@@ -65,6 +68,24 @@ class CorelAPI:
         
     def abrir_documento(self, ruta):
         return abrir_documento(self.app, ruta)
+
+    def obtener_documento_abierto(
+        self,
+        nombre_documento
+    ):
+
+        for doc in self.app.Documents:
+
+            try:
+
+                if doc.Name.lower() == nombre_documento.lower():
+
+                    return doc
+
+            except:
+                continue
+
+        return None
 
 
     def filtrar_tallas(self,doc,pedido):
@@ -201,6 +222,7 @@ class CorelAPI:
                     piezas_permitidas
                     + overlays
                     + zonas
+                    +LABELS
                 )
 
                 shapes_eliminar = (
@@ -241,6 +263,14 @@ class CorelAPI:
     def transferir_diseno(self, doc_base, doc_resultado, pedido):
 
         try:
+
+            PIEZAS_LABEL = [
+
+                    "delantero",
+                    "espalda",
+                    "manga_derecha",
+                    "manga_izquierda"
+                ]
             
             # recorrer páginas resultado
             for page in doc_resultado.Pages:
@@ -395,6 +425,27 @@ class CorelAPI:
                         logo_data["asset"],
                         logo_data["zone"],
                         pieza_destino
+                    )
+
+
+                for nombre_pieza in PIEZAS_LABEL:
+
+                    pieza_destino = (
+                        resolver_shapes_transferencia(
+                            doc_base,
+                            page,
+                            nombre_pieza,
+                            nombre_pieza
+                        )[1]
+                    )
+
+                    if not pieza_destino:
+                        continue
+
+                    self.label_manager.insertar_label_powerclip(
+                        page,
+                        pieza_destino,
+                        color=(0, 0, 0, 100)
                     )
 
                 # 🔥 limpiar todas las zonas
