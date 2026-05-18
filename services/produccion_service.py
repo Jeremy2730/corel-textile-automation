@@ -2,7 +2,9 @@ def ejecutar_produccion(
     corel,
     doc_base,
     doc_resultado,
-    pedido
+    pedido,
+    nombre_jugador,
+    numero_jugador
 ):
 
     print("\n🚀 Iniciando producción...\n")
@@ -25,7 +27,9 @@ def ejecutar_produccion(
     corel.transferir_diseno(
         doc_base,
         doc_resultado,
-        pedido
+        pedido,
+        nombre_jugador,
+        numero_jugador
     )
 
     print("\n✅ Producción finalizada")

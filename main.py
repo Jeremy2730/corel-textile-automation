@@ -35,6 +35,14 @@ if corel.conectar():
         "💾 ¿Dónde guardar el archivo generado?: "
     ).strip()
 
+    nombre_jugador = input(
+        "🧍 Nombre jugador: "
+    ).strip().upper()
+
+    numero_jugador = input(
+        "🔢 Número jugador: "
+    ).strip()
+
     doc_resultado = corel.copiar_archivo_base(
         ruta_tallas,
         pedido_nombre,
@@ -50,7 +58,7 @@ if corel.conectar():
     )
 
     mostrar_tallas(tallas_existentes)
-    print(tallas_base)
+
 
     pedido = crear_pedido(
         tallas_existentes,
@@ -67,5 +75,7 @@ if corel.conectar():
         corel,
         doc_base,
         doc_resultado,
-        pedido
+        pedido,
+        nombre_jugador,
+        numero_jugador
     )

@@ -1,0 +1,1 @@
+FONT_PRINCIPAL = "España Euro 2024 Tipografstore"

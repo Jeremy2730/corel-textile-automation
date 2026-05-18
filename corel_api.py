@@ -25,6 +25,8 @@ from config.logos import LOGOS
 from corel.powerclip_manager import (limpiar_zonas_pagina)
 from corel.personalization.label_manager import (LabelManager)
 from config.labels import LABELS
+from corel.personalization.text_manager import (TextManager)
+from config.fonts import (FONT_PRINCIPAL)
 
 class CorelAPI:
     def __init__(self):
@@ -33,6 +35,7 @@ class CorelAPI:
         self.label_manager = LabelManager()
         self.overlay_manager = OverlayManager()
         self.logo_manager = LogoManager()
+        self.text_manager = TextManager()
         
     def conectar(self):
 
@@ -260,7 +263,14 @@ class CorelAPI:
         )
 
 
-    def transferir_diseno(self, doc_base, doc_resultado, pedido):
+    def transferir_diseno(
+        self,
+        doc_base,
+        doc_resultado,
+        pedido,
+        nombre_jugador,
+        numero_jugador
+    ):
 
         try:
 
@@ -277,7 +287,7 @@ class CorelAPI:
 
                 page.Activate()
 
-                print(f"\n📄 Procesando talla: {page.Name}")
+
 
                 talla_actual = (
                     page.Name
@@ -446,6 +456,43 @@ class CorelAPI:
                         page,
                         pieza_destino,
                         color=(0, 0, 0, 100)
+                    )
+
+
+                # 🔥 SOLO UNA VEZ
+                pieza_espalda = (
+                    resolver_shapes_transferencia(
+                        doc_base,
+                        page,
+                        "espalda",
+                        "espalda"
+                    )[1]
+                )
+
+                if pieza_espalda:
+
+                    # 🔥 NOMBRE
+                    self.text_manager.insertar_texto_powerclip(
+                        self.app,
+                        page,
+                        nombre_jugador,
+                        "zona_nombre",
+                        pieza_espalda,
+                        font_name=FONT_PRINCIPAL,
+                        color_rgb=(248, 236, 45),
+                        padding=0.92
+                    )
+
+                    # 🔥 NÚMERO
+                    self.text_manager.insertar_texto_powerclip(
+                        self.app,
+                        page,
+                        numero_jugador,
+                        "zona_numero",
+                        pieza_espalda,
+                        font_name=FONT_PRINCIPAL,
+                        color_rgb=(248, 236, 45),
+                        padding=0.95
                     )
 
                 # 🔥 limpiar todas las zonas
