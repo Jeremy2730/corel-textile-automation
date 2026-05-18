@@ -1,4 +1,6 @@
 TALLAS_ESPECIALES = [
+    "2XL",
+    "3XL",
     "4XL",
     "5XL"
 ]
@@ -17,7 +19,5 @@ TALLAS_ADULTOS = [
     "S",
     "M",
     "L",
-    "XL",
-    "2XL",
-    "3XL"
+    "XL"
 ]

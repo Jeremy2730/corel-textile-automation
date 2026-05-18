@@ -27,6 +27,16 @@ from corel.personalization.label_manager import (LabelManager)
 from config.labels import LABELS
 from corel.personalization.text_manager import (TextManager)
 from config.fonts import (FONT_PRINCIPAL)
+from config.debug import DEBUG_FLAGS
+from config.text_rules import TEXT_RULES
+
+nombre_rules = (
+    TEXT_RULES["nombre"]
+)
+
+numero_rules = (
+    TEXT_RULES["numero"]
+)
 
 class CorelAPI:
     def __init__(self):
@@ -36,7 +46,7 @@ class CorelAPI:
         self.overlay_manager = OverlayManager()
         self.logo_manager = LogoManager()
         self.text_manager = TextManager()
-        
+
     def conectar(self):
 
         self.app = conectar_corel()
@@ -262,7 +272,7 @@ class CorelAPI:
             doc.Pages
         )
 
-
+    DEBUG_SOLO_TEXTOS = True
     def transferir_diseno(
         self,
         doc_base,
@@ -305,6 +315,8 @@ class CorelAPI:
                 piezas = obtener_piezas_producto(
                     producto_actual
                 )
+
+            if DEBUG_FLAGS.get("transferencias"):
 
                 for origen_nombre, destino_nombre in piezas:
 
@@ -366,6 +378,8 @@ class CorelAPI:
                     )[1]
                 )
 
+            if DEBUG_FLAGS.get("overlays"):
+
                 if shape_delantero:
 
                     self.overlay_manager.insertar_overlay_powerclip(
@@ -414,6 +428,8 @@ class CorelAPI:
                         shape_manga_izquierda
                     )
 
+            if DEBUG_FLAGS.get("logos"):
+
                 for logo_data in LOGOS.values():
 
                     pieza_destino = (
@@ -438,6 +454,9 @@ class CorelAPI:
                     )
 
 
+            # 🔥 LABELS
+            if DEBUG_FLAGS.get("labels"):
+
                 for nombre_pieza in PIEZAS_LABEL:
 
                     pieza_destino = (
@@ -459,44 +478,53 @@ class CorelAPI:
                     )
 
 
-                # 🔥 SOLO UNA VEZ
-                pieza_espalda = (
-                    resolver_shapes_transferencia(
-                        doc_base,
-                        page,
-                        "espalda",
-                        "espalda"
-                    )[1]
+            # 🔥 TEXTOS
+            pieza_espalda = (
+                resolver_shapes_transferencia(
+                    doc_base,
+                    page,
+                    "espalda",
+                    "espalda"
+                )[1]
+            )
+
+            if pieza_espalda:
+
+                nombre_rules = TEXT_RULES["nombre"]
+
+                self.text_manager.insertar_texto_powerclip(
+                    self.app,
+                    page,
+                    nombre_jugador,
+                    "zona_nombre",
+                    pieza_espalda,
+                    font_name=FONT_PRINCIPAL,
+                    color_rgb=(248, 236, 45),
+                    target_height=(
+                        nombre_rules["target_height"]
+                    ),
+                    max_width_ratio=nombre_rules["max_width_ratio"]
                 )
 
-                if pieza_espalda:
+                numero_rules = TEXT_RULES["numero"]
 
-                    # 🔥 NOMBRE
-                    self.text_manager.insertar_texto_powerclip(
-                        self.app,
-                        page,
-                        nombre_jugador,
-                        "zona_nombre",
-                        pieza_espalda,
-                        font_name=FONT_PRINCIPAL,
-                        color_rgb=(248, 236, 45),
-                        padding=0.92
-                    )
+                self.text_manager.insertar_texto_powerclip(
+                    self.app,
+                    page,
+                    numero_jugador,
+                    "zona_numero",
+                    pieza_espalda,
+                    font_name=FONT_PRINCIPAL,
+                    color_rgb=(248, 236, 45),
+                    target_height=(
+                        numero_rules["target_height"]
+                    ),
+                    max_width_ratio=numero_rules["max_width_ratio"]
+                )
 
-                    # 🔥 NÚMERO
-                    self.text_manager.insertar_texto_powerclip(
-                        self.app,
-                        page,
-                        numero_jugador,
-                        "zona_numero",
-                        pieza_espalda,
-                        font_name=FONT_PRINCIPAL,
-                        color_rgb=(248, 236, 45),
-                        padding=0.95
-                    )
 
-                # 🔥 limpiar todas las zonas
-                limpiar_zonas_pagina(page)
+            # 🔥 LIMPIEZA
+            limpiar_zonas_pagina(page)
 
             log_info("Todas las piezas transferidas correctamente")
 

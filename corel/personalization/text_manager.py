@@ -2,8 +2,8 @@ from corel.personalization.zone_manager import (
     ZoneManager
 )
 
-from corel.personalization.fit_manager import (
-    FitManager
+from corel.personalization.text_fit_manager import (
+    TextFitManager
 )
 
 from utils.logger import (
@@ -21,7 +21,7 @@ class TextManager:
 
         self.zone_manager = ZoneManager()
 
-        self.fit_manager = FitManager()
+        self.text_fit_manager = TextFitManager()
 
     def insertar_texto_powerclip(
         self,
@@ -31,8 +31,9 @@ class TextManager:
         zone_name,
         powerclip_destino,
         font_name=FONT_PRINCIPAL,
-        color_rgb=(248, 236, 45),
-        padding=0.9
+        color_rgb=(248,236,45),
+        target_height=32,
+        max_width_ratio=0.95
     ):
 
         zona = self.zone_manager.get_zone(
@@ -62,6 +63,7 @@ class TextManager:
                 )
             )
 
+
             texto_shape.Name = (
                 f"texto_{zone_name}"
             )
@@ -84,10 +86,11 @@ class TextManager:
             texto_shape.Outline.SetNoOutline()
 
             # 🔥 ajustar geometría
-            self.fit_manager.fit_shape_to_zone(
+            self.text_fit_manager.fit_text_to_zone(
                 texto_shape,
                 zona,
-                padding
+                target_height,
+                max_width_ratio
             )
 
             # 🔥 meter al powerclip
