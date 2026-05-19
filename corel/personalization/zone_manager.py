@@ -1,6 +1,7 @@
 # corel/personalization/zone_manager.py
 
 from utils.logger import log_warning
+from config.text_scales import TEXT_SCALES
 
 
 class ZoneManager:
@@ -50,3 +51,11 @@ class ZoneManager:
             )
 
         return zone
+
+
+    def obtener_text_scale(talla):
+
+        return TEXT_SCALES.get(
+            talla.upper(),
+            1.0
+        )

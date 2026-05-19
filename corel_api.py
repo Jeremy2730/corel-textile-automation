@@ -29,6 +29,8 @@ from corel.personalization.text_manager import (TextManager)
 from config.fonts import (FONT_PRINCIPAL)
 from config.debug import DEBUG_FLAGS
 from config.text_rules import TEXT_RULES
+from config.text_scales import TEXT_SCALES
+
 
 nombre_rules = (
     TEXT_RULES["nombre"]
@@ -492,6 +494,16 @@ class CorelAPI:
 
                 nombre_rules = TEXT_RULES["nombre"]
 
+                scale_factor = TEXT_SCALES.get(
+                    talla_actual,
+                    1.0
+                )
+
+                nombre_height = (
+                    nombre_rules["target_height"]
+                    * scale_factor
+                )
+
                 self.text_manager.insertar_texto_powerclip(
                     self.app,
                     page,
@@ -500,13 +512,16 @@ class CorelAPI:
                     pieza_espalda,
                     font_name=FONT_PRINCIPAL,
                     color_rgb=(248, 236, 45),
-                    target_height=(
-                        nombre_rules["target_height"]
-                    ),
+                    target_height=nombre_height,
                     max_width_ratio=nombre_rules["max_width_ratio"]
                 )
 
                 numero_rules = TEXT_RULES["numero"]
+
+                numero_height = (
+                    numero_rules["target_height"]
+                    * scale_factor
+                )
 
                 self.text_manager.insertar_texto_powerclip(
                     self.app,
@@ -516,9 +531,7 @@ class CorelAPI:
                     pieza_espalda,
                     font_name=FONT_PRINCIPAL,
                     color_rgb=(248, 236, 45),
-                    target_height=(
-                        numero_rules["target_height"]
-                    ),
+                    target_height=numero_height,
                     max_width_ratio=numero_rules["max_width_ratio"]
                 )
 
