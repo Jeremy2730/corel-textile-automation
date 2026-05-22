@@ -79,3 +79,46 @@ if corel.conectar():
         nombre_jugador,
         numero_jugador
     )
+
+    while True:
+
+        print("\n==========")
+        print("1. Cambiar nombre")
+        print("2. Salir")
+        print("==========")
+
+        opcion = input(
+            "Seleccione una opción: "
+        ).strip()
+
+        if opcion == "1":
+
+            nuevo_nombre = input(
+                "\nNuevo nombre: "
+            ).strip().upper()
+
+            for page in doc_resultado.Pages:
+
+                corel.cambiar_nombre_jugador(
+                    page,
+                    nuevo_nombre
+                )
+
+            print(
+                f"\n✅ Nombre actualizado: "
+                f"{nuevo_nombre}"
+            )
+
+        elif opcion == "2":
+
+            print(
+                "\n✅ Finalizando sistema..."
+            )
+
+            break
+
+        else:
+
+            print(
+                "\n❌ Opción inválida"
+            )

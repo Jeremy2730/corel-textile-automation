@@ -5,7 +5,8 @@ class TextFitManager:
         text_shape,
         zone,
         target_height,
-        max_width_ratio=0.95
+        max_width_ratio=0.95,
+        base_stretch_x=135
     ):
 
         text_w = text_shape.SizeWidth
@@ -28,6 +29,11 @@ class TextFitManager:
         # --------------------------------
         # 2. VALIDAR ANCHO
         # --------------------------------
+
+        text_shape.Stretch(
+            base_stretch_x / 100,
+            1
+        )
 
         max_w = (
             zone.SizeWidth * max_width_ratio

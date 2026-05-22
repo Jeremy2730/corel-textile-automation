@@ -68,6 +68,17 @@ class TextManager:
                 f"texto_{zone_name}"
             )
 
+            if zone_name == "zona_nombre":
+
+                texto_shape.Name = "TEXT_NOMBRE"
+
+            else:
+
+                texto_shape.Name = (
+                    f"texto_{zone_name}"
+                )
+
+
             # 🔥 fuente
             texto_shape.Text.Story.Font = (
                 font_name

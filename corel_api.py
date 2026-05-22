@@ -27,7 +27,6 @@ from corel.personalization.label_manager import (LabelManager)
 from config.labels import LABELS
 from corel.personalization.text_manager import (TextManager)
 from config.fonts import (FONT_PRINCIPAL)
-from config.debug import DEBUG_FLAGS
 from config.text_rules import TEXT_RULES
 from config.text_scales import TEXT_SCALES
 
@@ -274,7 +273,6 @@ class CorelAPI:
             doc.Pages
         )
 
-    DEBUG_SOLO_TEXTOS = True
     def transferir_diseno(
         self,
         doc_base,
@@ -300,7 +298,6 @@ class CorelAPI:
                 page.Activate()
 
 
-
                 talla_actual = (
                     page.Name
                     .split("_")[0]
@@ -318,7 +315,6 @@ class CorelAPI:
                     producto_actual
                 )
 
-            if DEBUG_FLAGS.get("transferencias"):
 
                 for origen_nombre, destino_nombre in piezas:
 
@@ -380,7 +376,6 @@ class CorelAPI:
                     )[1]
                 )
 
-            if DEBUG_FLAGS.get("overlays"):
 
                 if shape_delantero:
 
@@ -430,7 +425,6 @@ class CorelAPI:
                         shape_manga_izquierda
                     )
 
-            if DEBUG_FLAGS.get("logos"):
 
                 for logo_data in LOGOS.values():
 
@@ -456,9 +450,7 @@ class CorelAPI:
                     )
 
 
-            # 🔥 LABELS
-            if DEBUG_FLAGS.get("labels"):
-
+                # 🔥 LABELS
                 for nombre_pieza in PIEZAS_LABEL:
 
                     pieza_destino = (
@@ -480,68 +472,111 @@ class CorelAPI:
                     )
 
 
-            # 🔥 TEXTOS
-            pieza_espalda = (
-                resolver_shapes_transferencia(
-                    doc_base,
-                    page,
-                    "espalda",
-                    "espalda"
-                )[1]
-            )
-
-            if pieza_espalda:
-
-                nombre_rules = TEXT_RULES["nombre"]
-
-                scale_factor = TEXT_SCALES.get(
-                    talla_actual,
-                    1.0
+                # 🔥 TEXTOS
+                pieza_espalda = (
+                    resolver_shapes_transferencia(
+                        doc_base,
+                        page,
+                        "espalda",
+                        "espalda"
+                    )[1]
                 )
 
-                nombre_height = (
-                    nombre_rules["target_height"]
-                    * scale_factor
-                )
+                if pieza_espalda:
 
-                self.text_manager.insertar_texto_powerclip(
-                    self.app,
-                    page,
-                    nombre_jugador,
-                    "zona_nombre",
-                    pieza_espalda,
-                    font_name=FONT_PRINCIPAL,
-                    color_rgb=(248, 236, 45),
-                    target_height=nombre_height,
-                    max_width_ratio=nombre_rules["max_width_ratio"]
-                )
+                    nombre_rules = TEXT_RULES["nombre"]
 
-                numero_rules = TEXT_RULES["numero"]
+                    scale_factor = TEXT_SCALES.get(
+                        talla_actual,
+                        1.0
+                    )
 
-                numero_height = (
-                    numero_rules["target_height"]
-                    * scale_factor
-                )
+                    nombre_height = (
+                        nombre_rules["target_height"]
+                        * scale_factor
+                    )
 
-                self.text_manager.insertar_texto_powerclip(
-                    self.app,
-                    page,
-                    numero_jugador,
-                    "zona_numero",
-                    pieza_espalda,
-                    font_name=FONT_PRINCIPAL,
-                    color_rgb=(248, 236, 45),
-                    target_height=numero_height,
-                    max_width_ratio=numero_rules["max_width_ratio"]
-                )
+                    self.text_manager.insertar_texto_powerclip(
+                        self.app,
+                        page,
+                        nombre_jugador,
+                        "zona_nombre",
+                        pieza_espalda,
+                        font_name=FONT_PRINCIPAL,
+                        color_rgb=(248, 236, 45),
+                        target_height=nombre_height,
+                        max_width_ratio=nombre_rules["max_width_ratio"]
+                    )
+
+                    numero_rules = TEXT_RULES["numero"]
+
+                    numero_height = (
+                        numero_rules["target_height"]
+                        * scale_factor
+                    )
+
+                    self.text_manager.insertar_texto_powerclip(
+                        self.app,
+                        page,
+                        numero_jugador,
+                        "zona_numero",
+                        pieza_espalda,
+                        font_name=FONT_PRINCIPAL,
+                        color_rgb=(248, 236, 45),
+                        target_height=numero_height,
+                        max_width_ratio=numero_rules["max_width_ratio"]
+                    )
 
 
-            # 🔥 LIMPIEZA
-            limpiar_zonas_pagina(page)
+                # 🔥 LIMPIEZA
+                limpiar_zonas_pagina(page)
 
-            log_info("Todas las piezas transferidas correctamente")
+                log_info("Todas las piezas transferidas correctamente")
 
         except Exception as e:
             log_error(
                 f"❌ Error transfiriendo diseño: {e}"
+            )
+
+
+    def cambiar_nombre_jugador(
+        self,
+        page,
+        nuevo_nombre
+    ):
+
+        try:
+
+            for shape in page.Shapes:
+
+                if not shape.PowerClip:
+                    continue
+
+                shapes_inside = (
+                    shape.PowerClip.Shapes
+                )
+
+                for inside_shape in shapes_inside:
+
+                    if inside_shape.Name == "TEXT_NOMBRE":
+
+                        inside_shape.Text.Story = (
+                            nuevo_nombre
+                        )
+
+                        log_info(
+                            f"Nombre actualizado: "
+                            f"{nuevo_nombre}"
+                        )
+
+                        return
+
+            log_warning(
+                "TEXT_NOMBRE no encontrado"
+            )
+
+        except Exception as e:
+
+            log_error(
+                f"Error cambiando nombre: {e}"
             )

@@ -34,11 +34,12 @@ def ajustar_textura_powerclip(
             scale_y
         )
 
+        # SOLO REDUCIR
         if escala < 1:
 
-            contenido_pc.SetSize(
-                ancho_textura * escala,
-                alto_textura * escala
+            contenido_pc.Stretch(
+                escala,
+                escala
             )
 
         contenido_pc.CenterX = (

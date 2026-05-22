@@ -2,8 +2,8 @@ TEXT_RULES = {
 
     "nombre": {
 
-        "target_height": 2.2,
-        "max_width_ratio": 0.92
+        "target_height": 2.5,
+        "max_width_ratio": 1.2
     },
 
     "numero": {
